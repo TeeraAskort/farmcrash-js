@@ -36,4 +36,31 @@ async function farmCrop(index) {
   UI.default.loadPlayerInfo(player);
 }
 
-export default { fetchPlayer, createPlayer, farmCrop };
+async function getTasksToAssign(index) {
+  let response = await fetch(url + "api/v1/task/all");
+  let data = await response.json();
+  UI.default.assignTask(index, data);
+}
+
+async function assignTask(index, task) {
+  let response = await fetch(
+    url +
+      "api/v1/player/" +
+      localStorage.getItem("player") +
+      "/worker/" +
+      index +
+      "/assignTask/" +
+      task
+  );
+  let data = await response.json();
+  let player = Object.assign(new Player(), data);
+  UI.default.loadPlayerInfo(player);
+}
+
+export default {
+  fetchPlayer,
+  createPlayer,
+  farmCrop,
+  getTasksToAssign,
+  assignTask,
+};
