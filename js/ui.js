@@ -141,14 +141,14 @@ function loadPlayerInfo(data) {
       workerCardBody.appendChild(workerName);
 
       if (!worker.taskAssignedTo) {
-        let assignTask = document.createElement("a");
-        assignTask.classList.add("btn");
-        assignTask.classList.add("btn-success");
-        assignTask.textContent = "Assign Task";
-        assignTask.addEventListener("click", () => {
+        let assignTaskBtn = document.createElement("a");
+        assignTaskBtn.classList.add("btn");
+        assignTaskBtn.classList.add("btn-success");
+        assignTaskBtn.textContent = "Assign Task";
+        assignTaskBtn.addEventListener("click", () => {
           REST.default.getTasksToAssign(index);
         });
-        workerCardBody.appendChild(assignTask);
+        workerCardBody.appendChild(assignTaskBtn);
       } else {
         let workerTask = document.createElement("p");
         workerTask.classList.add("card-text");
@@ -249,8 +249,8 @@ function login() {
   btn.classList.add("btn-primary");
   btn.textContent = "Login";
   btn.addEventListener("click", () => {
-    let name = input.value;
-    loginPlayer(name, password);
+    let username = input.value;
+    loginPlayer(username, password);
   });
   cardBody.appendChild(btn);
   card.appendChild(cardBody);
