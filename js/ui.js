@@ -165,6 +165,7 @@ function loadPlayerInfo(data) {
 
 function createUser() {
   getContainer();
+  container.innerHTML = "";
   let row = document.createElement("div");
   row.classList.add("row");
   row.classList.add("justify-content-around");
@@ -179,21 +180,30 @@ function createUser() {
   h5.classList.add("card-title");
   h5.innerText = "Create user";
   cardBody.appendChild(h5);
-  let input = document.createElement("input");
-  input.type = "text";
-  input.name = "username";
-  input.id = "username";
-  input.placeholder = "Username";
-  input.classList.add("form-control");
-  input.classList.add("mb-3");
-  cardBody.appendChild(input);
+  let username = document.createElement("input");
+  username.type = "text";
+  username.name = "username";
+  username.id = "username";
+  username.placeholder = "Username";
+  username.classList.add("form-control");
+  username.classList.add("mb-3");
+  cardBody.appendChild(username);
+  let password = document.createElement("input");
+  password.type = "password";
+  password.name = "password";
+  password.id = "password";
+  password.placeholder = "Placeholder";
+  password.classList.add("form-control");
+  password.classList.add("mb-3");
+  cardBody.appendChild(password);
   let btn = document.createElement("a");
   btn.classList.add("btn");
   btn.classList.add("btn-primary");
   btn.textContent = "Send";
   btn.addEventListener("click", () => {
-    let name = input.value;
-    REST.default.createPlayer(name);
+    let user = username.value;
+    let pass = password.value;
+    REST.default.createPlayer(user, pass);
   });
   let btnLogin = document.createElement("a");
   btnLogin.classList.add("btn");
@@ -244,15 +254,25 @@ function login() {
   password.classList.add("form-control");
   password.classList.add("mb-3");
   cardBody.appendChild(password);
-  let btn = document.createElement("a");
-  btn.classList.add("btn");
-  btn.classList.add("btn-primary");
-  btn.textContent = "Login";
-  btn.addEventListener("click", () => {
-    let username = input.value;
-    loginPlayer(username, password);
+  let btnLogin = document.createElement("a");
+  btnLogin.classList.add("btn");
+  btnLogin.classList.add("btn-primary");
+  btnLogin.textContent = "Login";
+  btnLogin.addEventListener("click", () => {
+    let user = name.value;
+    let pass = password.value;
+    REST.default.loginPlayer(user, pass);
   });
-  cardBody.appendChild(btn);
+  let btnRegister = document.createElement("a");
+  btnRegister.classList.add("btn");
+  btnRegister.classList.add("btn-primary");
+  btnRegister.textContent = "Register";
+  btnRegister.classList.add("mx-3");
+  btnRegister.addEventListener("click", () => {
+    createUser();
+  });
+  cardBody.appendChild(btnLogin);
+  cardBody.appendChild(btnRegister);
   card.appendChild(cardBody);
   col.appendChild(card);
   row.appendChild(col);
