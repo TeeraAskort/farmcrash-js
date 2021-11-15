@@ -12,8 +12,16 @@ import * as REST from "./rest.js";
     }
   }
 
+  function buyCrops() {
+    UI.default.buyCrops();
+  }
+
   function inicializar() {
     loadUser();
+    document.querySelector("#home").addEventListener("click", function () {
+      loadUser();
+    });
+    document.querySelector("#buyCrops").addEventListener("click", buyCrops);
   }
 
   document.addEventListener("DOMContentLoaded", inicializar);

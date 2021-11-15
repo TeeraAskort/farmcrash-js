@@ -76,13 +76,35 @@ async function getTasksToAssign(index) {
 
 async function assignTask(index, task) {
   let response = await fetch(
-    url +
-      "api/v1/player/" +
-      localStorage.getItem("player") +
-      "/worker/" +
-      index +
-      "/assignTask/" +
-      task,
+    url + "api/v1/player/worker/" + index + "/assignTask/" + task,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("player"),
+      },
+      credentials: "include",
+    }
+  );
+  let data = await response.json();
+  let player = Object.assign(new Player(), data);
+  UI.default.loadPlayerInfo(player);
+}
+
+async function getAllCrops() {
+  let response = await fetch(url + "api/v1/crop/all", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
+  let crops = await response.json().then((data) => Object.values(data));
+  return crops;
+}
+
+async function buyCrop(id, amount) {
+  let response = await fetch(
+    url + "api/v1/player/crop/" + id + "/buy/" + amount,
     {
       method: "GET",
       headers: {
@@ -103,4 +125,6 @@ export default {
   getTasksToAssign,
   assignTask,
   loginPlayer,
+  getAllCrops,
+  buyCrop,
 };
