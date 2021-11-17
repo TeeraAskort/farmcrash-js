@@ -2,7 +2,7 @@ import * as UI from "./ui.js";
 import Player from "./player.js";
 import { Buffer } from "buffer";
 
-let url = "http://localhost:8080/";
+let url = "http://localhost:4040/";
 
 async function fetchPlayer() {
   let response = await fetch(url + "api/v1/player/login", {
@@ -90,7 +90,7 @@ async function sellCrop(index) {
   UI.default.loadPlayerInfo(player);
 }
 
-async function getTasksToAssign(index) {
+async function getTasksToAssign() {
   let response = await fetch(url + "api/v1/task/all", {
     method: "GET",
     headers: {
@@ -98,8 +98,7 @@ async function getTasksToAssign(index) {
     },
     credentials: "include",
   });
-  let data = await response.json();
-  UI.default.assignTask(index, data);
+  return response.json();
 }
 
 async function assignTask(index, task) {
@@ -113,9 +112,13 @@ async function assignTask(index, task) {
       credentials: "include",
     }
   );
-  let data = await response.json();
-  let player = Object.assign(new Player(), data);
-  UI.default.loadPlayerInfo(player);
+  if (!response.ok) {
+    UI.default.assignTask(index, await response.text());
+  } else {
+    let data = await response.json();
+    let player = Object.assign(new Player(), data);
+    UI.default.loadPlayerInfo(player);
+  }
 }
 
 async function getAllCrops() {
