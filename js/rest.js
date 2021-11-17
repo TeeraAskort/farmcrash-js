@@ -1,5 +1,6 @@
 import * as UI from "./ui.js";
 import Player from "./player.js";
+import { Buffer } from "buffer";
 
 let url = "http://localhost:8080/";
 
@@ -16,16 +17,29 @@ async function fetchPlayer() {
   UI.default.loadPlayerInfo(player);
 }
 
-async function loginPlayer(name, pass) {
+async function fetchPlayerData() {
   let response = await fetch(url + "api/v1/player/login", {
     method: "GET",
     headers: {
-      Authorization: "Basic " + btoa(name + ":" + pass),
+      Authorization: "Basic " + localStorage.getItem("player"),
     },
     credentials: "include",
   });
   const data = await response.json();
-  localStorage.setItem("player", btoa(name + ":" + pass));
+  return Object.assign(new Player(), data);
+}
+
+async function loginPlayer(name, pass) {
+  let playerStr = Buffer.from(name + ":" + pass);
+  let response = await fetch(url + "api/v1/player/login", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + playerStr.toString("base64"),
+    },
+    credentials: "include",
+  });
+  const data = await response.json();
+  localStorage.setItem("player", playerStr.toString("base64"));
   let player = Object.assign(new Player(), data);
   UI.default.loadPlayerInfo(player);
 }
@@ -41,7 +55,8 @@ async function createPlayer(name, pass) {
     });
     const data = await response.json();
     let player = Object.assign(new Player(), data);
-    localStorage.setItem("player", btoa(name + ":" + pass));
+    let playerStr = Buffer.from(name + ":" + pass);
+    localStorage.setItem("player", playerStr.toString("base64"));
     UI.default.loadPlayerInfo(player);
   }
 }
@@ -57,6 +72,19 @@ async function farmCrop(index) {
       credentials: "include",
     }
   );
+  let data = await response.json();
+  let player = Object.assign(new Player(), data);
+  UI.default.loadPlayerInfo(player);
+}
+
+async function sellCrop(index) {
+  let response = await fetch(url + "api/v1/player/crop/" + index + "/sell", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
   let data = await response.json();
   let player = Object.assign(new Player(), data);
   UI.default.loadPlayerInfo(player);
@@ -98,8 +126,7 @@ async function getAllCrops() {
     },
     credentials: "include",
   });
-  let crops = await response.json().then((data) => Object.values(data));
-  return crops;
+  return response.json().then((data) => Object.values(data));
 }
 
 async function buyCrop(id, amount) {
@@ -113,9 +140,42 @@ async function buyCrop(id, amount) {
       credentials: "include",
     }
   );
-  let data = await response.json();
-  let player = Object.assign(new Player(), data);
-  UI.default.loadPlayerInfo(player);
+  if (!response.ok) {
+    UI.default.buyCrops(await response.text());
+  } else {
+    let data = await response.json();
+    let player = Object.assign(new Player(), data);
+    UI.default.loadPlayerInfo(player);
+  }
+}
+
+async function getAllWorkers() {
+  let response = await fetch(url + "api/v1/worker/all", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
+
+  return response.json().then((data) => Object.values(data));
+}
+
+async function hireWorker(id) {
+  let response = await fetch(url + "api/v1/player/worker/" + id + "/hire", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
+  if (!response.ok) {
+    UI.default.hireWorker(await response.text());
+  } else {
+    let data = await response.json();
+    let player = Object.assign(new Player(), data);
+    UI.default.loadPlayerInfo(player);
+  }
 }
 
 export default {
@@ -127,4 +187,8 @@ export default {
   loginPlayer,
   getAllCrops,
   buyCrop,
+  getAllWorkers,
+  sellCrop,
+  fetchPlayerData,
+  hireWorker,
 };

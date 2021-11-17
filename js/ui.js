@@ -3,7 +3,18 @@ import * as REST from "./rest.js";
 let container = undefined;
 let url = "http://localhost:8080";
 
+function cleanActive() {
+  if (localStorage.getItem("active")) {
+    let option = document.querySelector(localStorage.getItem("active"));
+    option.classList.remove("active");
+  }
+}
+
 function loadPlayerInfo(data) {
+  cleanActive();
+  let home = document.querySelector("#home");
+  home.classList.add("active");
+  localStorage.setItem("active", "#home");
   getContainer();
   container.innerHTML = "";
 
@@ -83,6 +94,15 @@ function loadPlayerInfo(data) {
           REST.default.farmCrop(index);
         });
         cropCardBody.appendChild(farmCrop);
+      } else if (crop.stage === "SELL") {
+        let sellCrop = document.createElement("a");
+        sellCrop.classList.add("btn");
+        sellCrop.classList.add("btn-success");
+        sellCrop.textContent = "Sell";
+        sellCrop.addEventListener("click", () => {
+          REST.default.sellCrop(index);
+        });
+        cropCardBody.appendChild(sellCrop);
       }
       cropCard.appendChild(cropCardBody);
       cropCol.appendChild(cropCard);
@@ -333,14 +353,17 @@ async function buyCrops(error) {
   titleCol.classList.add("col-8");
   titleCol.classList.add("col-md-6");
   let title = document.createElement("h2");
+  title.classList.add("text-center");
+  title.classList.add("my-3");
   if (error) {
     title.innerHTML =
-      '<font color="red"> Error: ' + error.message + "</font><br>Buy crops";
+      '<font color="red">Error: ' + error + "</font><br>Buy crops";
   } else {
     title.innerText = "Buy crops";
   }
   titleCol.appendChild(title);
   titleRow.appendChild(titleCol);
+  container.append(titleRow);
   let cropsRow = document.createElement("div");
   cropsRow.classList.add("row");
   data.forEach((crop) => {
@@ -349,6 +372,7 @@ async function buyCrops(error) {
     cropCol.classList.add("col-sm-8");
     cropCol.classList.add("col-md-6");
     cropCol.classList.add("col-lg-4");
+    cropCol.classList.add("my-3");
     let cropCard = document.createElement("div");
     cropCard.classList.add("card");
     let cropImg = document.createElement("img");
@@ -357,6 +381,7 @@ async function buyCrops(error) {
     cropCard.appendChild(cropImg);
     let cropName = document.createElement("h5");
     cropName.classList.add("card-title");
+    cropName.classList.add("m-3");
     cropName.innerText = crop.name;
     cropCard.appendChild(cropName);
     let cardBody = document.createElement("div");
@@ -392,4 +417,79 @@ async function buyCrops(error) {
   container.append(cropsRow);
 }
 
-export default { createUser, loadPlayerInfo, assignTask, buyCrops };
+async function hireWorker(error) {
+  getContainer();
+  container.innerHTML = "";
+  let workers = await REST.default.getAllWorkers();
+  let player = await REST.default.fetchPlayerData();
+  let titleRow = document.createElement("div");
+  titleRow.classList.add("row");
+  titleRow.classList.add("justify-content-around");
+  let titleCol = document.createElement("div");
+  titleCol.classList.add("col-8");
+  titleCol.classList.add("col-md-6");
+  let title = document.createElement("h2");
+  title.classList.add("text-center");
+  title.classList.add("my-3");
+  if (error) {
+    title.innerHTML =
+      '<font color="red">Error: ' + error + "</font><br>Hire worker";
+  } else {
+    title.innerText = "Hire worker";
+  }
+  titleCol.appendChild(title);
+  titleRow.appendChild(titleCol);
+  container.append(titleRow);
+  let workerRow = document.createElement("div");
+  workerRow.classList.add("row");
+  workers.forEach((worker) => {
+    let workerCol = document.createElement("div");
+    workerCol.classList.add("col-12");
+    workerCol.classList.add("col-sm-8");
+    workerCol.classList.add("col-md-6");
+    workerCol.classList.add("col-lg-4");
+    workerCol.classList.add("my-3");
+    let workerCard = document.createElement("div");
+    workerCard.classList.add("card");
+    let workerImg = document.createElement("img");
+    workerImg.classList.add("card-img-top");
+    workerImg.src = url + worker.imageUrl;
+    workerCard.appendChild(workerImg);
+    let workerName = document.createElement("h5");
+    workerName.classList.add("card-title");
+    workerName.classList.add("m-3");
+    workerName.innerText = worker.name;
+    workerCard.appendChild(workerName);
+    let cardBody = document.createElement("div");
+    cardBody.classList.add("card-body");
+    let hired = false;
+    player.workers.forEach((hiredW) => {
+      if (hiredW.name === worker.name) {
+        hired = true;
+      }
+    });
+    if (!hired) {
+      let cost = document.createElement("p");
+      cost.innerText = "Cost: " + worker.costOfHiring + "€";
+      cardBody.appendChild(cost);
+      let hire = document.createElement("a");
+      hire.classList.add("btn");
+      hire.classList.add("btn-success");
+      hire.textContent = "Hire";
+      hire.addEventListener("click", () => {
+        REST.default.hireWorker(worker.id);
+      });
+      cardBody.appendChild(hire);
+    } else {
+      let alreadyHired = document.createElement("p");
+      alreadyHired.innerText = "Worker already hired";
+      cardBody.appendChild(alreadyHired);
+    }
+    workerCard.appendChild(cardBody);
+    workerCol.appendChild(workerCard);
+    workerRow.appendChild(workerCol);
+  });
+  container.append(workerRow);
+}
+
+export default { createUser, loadPlayerInfo, assignTask, buyCrops, hireWorker };
