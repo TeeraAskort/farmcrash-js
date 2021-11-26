@@ -1,6 +1,14 @@
-import * as UI from "./ui.js";
-import * as REST from "./rest.js";
-import Player from "./player.js";
+import * as REST from "./rest/rest.js";
+import Player from "./models/player.js";
+import buyCrops from "./ui/crops.js";
+import leaderboard from "./ui/leaderboard.js";
+import hireWorker from "./ui/worker.js";
+import assignTask from "./ui/task.js";
+import loadPlayerInfo from "./ui/playerInfo.js";
+import * as USER from "./ui/user.js";
+
+import checkThatWokersAreDisplayed from "./tests/checkThatWokersAreDisplayed.spec.js";
+import checkThatCropsAreDisplayedInBuyPage from "./tests/checkThatCropsAreDisplayedInBuyPage.spec.js";
 
 (function () {
   "use strict";
@@ -14,7 +22,7 @@ import Player from "./player.js";
 
   function loadUser() {
     if (!localStorage.getItem("player")) {
-      UI.default.createUser();
+      USER.default.createUser();
     } else {
       REST.default.fetchPlayer();
     }
@@ -24,9 +32,9 @@ import Player from "./player.js";
     localStorage.setItem("active", "#home");
   }
 
-  function buyCrops() {
+  function buyCropsFunc() {
     if (localStorage.getItem("player")) {
-      UI.default.buyCrops();
+      buyCrops();
       cleanActive();
       let option = document.querySelector("#buyCrops");
       option.classList.add("active");
@@ -39,14 +47,23 @@ import Player from "./player.js";
     document.querySelector("#home").addEventListener("click", function () {
       loadUser();
     });
-    document.querySelector("#buyCrops").addEventListener("click", buyCrops);
+    document.querySelector("#buyCrops").addEventListener("click", buyCropsFunc);
     document.querySelector("#hireWorkers").addEventListener("click", () => {
       if (localStorage.getItem("player")) {
-        UI.default.hireWorker();
+        hireWorker();
         cleanActive();
         let option = document.querySelector("#hireWorkers");
         option.classList.add("active");
         localStorage.setItem("active", "#hireWorkers");
+      }
+    });
+    document.querySelector("#leaderboard").addEventListener("click", () => {
+      if (localStorage.getItem("player")) {
+        leaderboard();
+        cleanActive();
+        let option = document.querySelector("#leaderboard");
+        option.classList.add("active");
+        localStorage.setItem("active", "#leaderboard");
       }
     });
   }

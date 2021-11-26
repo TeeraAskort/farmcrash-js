@@ -1,5 +1,6 @@
-import * as UI from "./ui.js";
-import Player from "./player.js";
+import loadPlayerInfo from "../ui/playerInfo.js";
+import hireWorker from "../ui/worker.js";
+import Player from "../models/player.js";
 import { Buffer } from "buffer";
 
 let url = "http://localhost:4040/";
@@ -14,7 +15,7 @@ async function fetchPlayer() {
   });
   const data = await response.json();
   let player = Object.assign(new Player(), data);
-  UI.default.loadPlayerInfo(player);
+  loadPlayerInfo(player);
 }
 
 async function fetchPlayerData() {
@@ -41,7 +42,7 @@ async function loginPlayer(name, pass) {
   const data = await response.json();
   localStorage.setItem("player", playerStr.toString("base64"));
   let player = Object.assign(new Player(), data);
-  UI.default.loadPlayerInfo(player);
+  loadPlayerInfo(player);
 }
 
 async function createPlayer(name, pass) {
@@ -57,7 +58,7 @@ async function createPlayer(name, pass) {
     let player = Object.assign(new Player(), data);
     let playerStr = Buffer.from(name + ":" + pass);
     localStorage.setItem("player", playerStr.toString("base64"));
-    UI.default.loadPlayerInfo(player);
+    loadPlayerInfo(player);
   }
 }
 
@@ -74,7 +75,7 @@ async function farmCrop(index) {
   );
   let data = await response.json();
   let player = Object.assign(new Player(), data);
-  UI.default.loadPlayerInfo(player);
+  loadPlayerInfo(player);
 }
 
 async function sellCrop(index) {
@@ -87,7 +88,7 @@ async function sellCrop(index) {
   });
   let data = await response.json();
   let player = Object.assign(new Player(), data);
-  UI.default.loadPlayerInfo(player);
+  loadPlayerInfo(player);
 }
 
 async function getTasksToAssign() {
@@ -117,7 +118,7 @@ async function assignTask(index, task) {
   } else {
     let data = await response.json();
     let player = Object.assign(new Player(), data);
-    UI.default.loadPlayerInfo(player);
+    loadPlayerInfo(player);
   }
 }
 
@@ -148,7 +149,7 @@ async function buyCrop(id, amount) {
   } else {
     let data = await response.json();
     let player = Object.assign(new Player(), data);
-    UI.default.loadPlayerInfo(player);
+    loadPlayerInfo(player);
   }
 }
 
@@ -164,7 +165,7 @@ async function getAllWorkers() {
   return response.json().then((data) => Object.values(data));
 }
 
-async function hireWorker(id) {
+async function hireWorkerRest(id) {
   let response = await fetch(url + "api/v1/player/worker/" + id + "/hire", {
     method: "GET",
     headers: {
@@ -173,12 +174,37 @@ async function hireWorker(id) {
     credentials: "include",
   });
   if (!response.ok) {
-    UI.default.hireWorker(await response.text());
+    hireWorker(await response.text());
   } else {
     let data = await response.json();
     let player = Object.assign(new Player(), data);
-    UI.default.loadPlayerInfo(player);
+    loadPlayerInfo(player);
   }
+}
+
+async function getLeaderboard() {
+  let response = await fetch(url + "api/v1/player/leaderboard", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
+  return response.json().then((data) => Object.values(data));
+}
+
+async function sellItem(index) {
+  let response = await fetch(url + "api/v1/player/item/" + index + "/sell", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
+
+  let data = await response.json();
+  let player = Object.assign(new Player(), data);
+  loadPlayerInfo(player);
 }
 
 export default {
@@ -193,5 +219,6 @@ export default {
   getAllWorkers,
   sellCrop,
   fetchPlayerData,
-  hireWorker,
+  hireWorkerRest,
+  getLeaderboard,
 };
