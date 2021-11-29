@@ -1,6 +1,7 @@
 import loadPlayerInfo from "../ui/playerInfo.js";
 import hireWorker from "../ui/worker.js";
 import Player from "../models/player.js";
+import buyCrops from "../ui/crops.js";
 import { Buffer } from "buffer";
 
 let url = "http://localhost:4040/";
@@ -145,7 +146,7 @@ async function buyCrop(id, amount) {
     }
   );
   if (!response.ok) {
-    UI.default.buyCrops(await response.text());
+    buyCrops(await response.text());
   } else {
     let data = await response.json();
     let player = Object.assign(new Player(), data);
@@ -221,4 +222,5 @@ export default {
   fetchPlayerData,
   hireWorkerRest,
   getLeaderboard,
+  sellItem,
 };

@@ -1,7 +1,7 @@
 import * as REST from "./rest/rest.js";
 import Player from "./models/player.js";
 import buyCrops from "./ui/crops.js";
-import leaderboard from "./ui/leaderboard.js";
+import * as LISTS from "./ui/lists.js";
 import hireWorker from "./ui/worker.js";
 import assignTask from "./ui/task.js";
 import loadPlayerInfo from "./ui/playerInfo.js";
@@ -59,11 +59,41 @@ import checkThatCropsAreDisplayedInBuyPage from "./tests/checkThatCropsAreDispla
     });
     document.querySelector("#leaderboard").addEventListener("click", () => {
       if (localStorage.getItem("player")) {
-        leaderboard();
+        LISTS.default.leaderboard();
         cleanActive();
         let option = document.querySelector("#leaderboard");
         option.classList.add("active");
         localStorage.setItem("active", "#leaderboard");
+      }
+    });
+
+    document.querySelector("#listCrops").addEventListener("click", () => {
+      if (localStorage.getItem("player")) {
+        LISTS.default.listCrops();
+        cleanActive();
+        let option = document.querySelector("#listCrops");
+        option.classList.add("active");
+        localStorage.setItem("active", "#listCrops");
+      }
+    });
+
+    document.querySelector("#listWorkers").addEventListener("click", () => {
+      if (localStorage.getItem("player")) {
+        LISTS.default.listWokers();
+        cleanActive();
+        let option = document.querySelector("#listWorkers");
+        option.classList.add("active");
+        localStorage.setItem("active", "#listWorkers");
+      }
+    });
+
+    document.querySelector("#listItems").addEventListener("click", () => {
+      if (localStorage.getItem("player")) {
+        LISTS.default.listItems();
+        cleanActive();
+        let option = document.querySelector("#listItems");
+        option.classList.add("active");
+        localStorage.setItem("active", "#listItems");
       }
     });
   }

@@ -19,9 +19,49 @@ export default async function buyCrops(error) {
   getContainer();
   container.innerHTML = "";
   let data = await REST.default.getAllCrops();
+
+  let searchRow = document.createElement("div");
+  searchRow.classList.add("row");
+  searchRow.classList.add("justify-content-around");
+  let searchCol = document.createElement("div");
+  searchCol.classList.add("col-12");
+  searchCol.classList.add("col-md-6");
+  let searchForm = document.createElement("form");
+  let searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchForm.appendChild(searchInput);
+  searchCol.appendChild(searchForm);
+  searchRow.appendChild(searchCol);
+  container.appendChild(searchRow);
+
+  let { titleRow, cropsRow } = drawCrops(data, error);
+  console.log(titleRow);
+  console.log(cropsRow);
+
+  searchInput.addEventListener("focusin", () => {
+    document.addEventListener("keydown", () => {
+      let searchText = searchInput.value.trim();
+      let resultData = search(searchText, data);
+      container.removeChild(container.querySelector(".rowToRemove"));
+      container.removeChild(container.querySelector(".rowToRemove"));
+      drawCrops(resultData);
+    });
+  });
+
+  checkThatCropsAreDisplayedInBuyPage();
+}
+
+function search(searchText, crops) {
+  return crops.filter((crop) =>
+    crop.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+}
+
+function drawCrops(crops, error) {
   let titleRow = document.createElement("div");
   titleRow.classList.add("row");
   titleRow.classList.add("justify-content-around");
+  titleRow.classList.add("rowToRemove");
   let titleCol = document.createElement("div");
   titleCol.classList.add("col-8");
   titleCol.classList.add("col-md-6");
@@ -39,7 +79,8 @@ export default async function buyCrops(error) {
   container.append(titleRow);
   let cropsRow = document.createElement("div");
   cropsRow.classList.add("row");
-  data.forEach((crop) => {
+  cropsRow.classList.add("rowToRemove");
+  crops.forEach((crop) => {
     let cropCol = document.createElement("div");
     cropCol.classList.add("col-12");
     cropCol.classList.add("col-sm-8");
@@ -90,5 +131,5 @@ export default async function buyCrops(error) {
   });
   container.append(cropsRow);
 
-  checkThatCropsAreDisplayedInBuyPage();
+  return { titleRow, cropsRow };
 }

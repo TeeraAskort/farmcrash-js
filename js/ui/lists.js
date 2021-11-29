@@ -1,6 +1,4 @@
 import * as REST from "../rest/rest.js";
-import assignTask from "./task.js";
-import checkThatWokersAreDisplayed from "../tests/checkThatWokersAreDisplayed.spec.js";
 
 let container = undefined;
 let url = "http://localhost:4040";
@@ -16,37 +14,50 @@ function getContainer() {
   container = document.querySelector("#container");
 }
 
-export default function loadPlayerInfo(data) {
-  cleanActive();
-  let home = document.querySelector("#home");
-  home.classList.add("active");
-  localStorage.setItem("active", "#home");
+async function leaderboard() {
   getContainer();
   container.innerHTML = "";
 
-  // Money
+  let players = await REST.default.getLeaderboard();
 
-  let row = document.createElement("div");
-  row.classList.add("row");
-  row.classList.add("justify-content-around");
-  let col = document.createElement("div");
-  col.classList.add("col-6");
-  col.classList.add("col-md-3");
-  let header = document.createElement("h2");
-  header.innerText = " Money: " + data.money + "€";
-  header.style.textAlign = "center";
-  col.appendChild(header);
-  row.appendChild(col);
-  container.appendChild(row);
+  let cadena = `<div class="row justify-content-around">
+                    <div class="col-12 col-md-6 col-sm-8">
+                        <h2>Leaderboard</h2>
+                    </div>
+                </div>
+                <div class="row justify-content-around">
+                    <div class="col-12 col-md-6 col-sm-8">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">money</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
 
-  let workerCropRow = document.createElement("div");
-  workerCropRow.classList.add("row");
+  players.forEach((player, index) => {
+    cadena += `<tr>
+                    <th scope="row">${index + 1}</th>
+                    <th>${player.name}</th>
+                    <th>${player.money}</th>
+                </tr>`;
+  });
 
-  // Crops list
+  cadena += `               </tbody>
+                        </table>
+                    </div>
+                </div>`;
 
-  let cropGCol = document.createElement("div");
-  cropGCol.classList.add("col-12");
-  cropGCol.classList.add("col-md-6");
+  container.innerHTML = cadena;
+}
+
+async function listCrops() {
+  getContainer();
+  container.innerHTML = "";
+
+  let data = await REST.default.fetchPlayerData();
 
   let cropH2Row = document.createElement("div");
   cropH2Row.classList.add("row");
@@ -62,7 +73,7 @@ export default function loadPlayerInfo(data) {
   cropsH2.innerText = "Crops";
   cropH2Col.appendChild(cropsH2);
   cropH2Row.appendChild(cropH2Col);
-  cropGCol.append(cropH2Row);
+  container.append(cropH2Row);
 
   let cropRow = document.createElement("div");
   cropRow.classList.add("row");
@@ -71,7 +82,8 @@ export default function loadPlayerInfo(data) {
   if (data.crops.length === 0) {
     let cropsEmptyCol = document.createElement("div");
     cropsEmptyCol.classList.add("col-12");
-    cropsEmptyCol.classList.add("col-md-6");
+    cropsEmptyCol.classList.add("col-sm-6");
+    cropsEmptyCol.classList.add("col-md-3");
     let cropsEmptyH2 = document.createElement("h3");
     cropsEmptyH2.classList.add("text-center");
     cropsEmptyH2.innerText = "You don't have crops";
@@ -81,7 +93,8 @@ export default function loadPlayerInfo(data) {
     data.crops.forEach((crop, index) => {
       let cropCol = document.createElement("div");
       cropCol.classList.add("col-12");
-      cropCol.classList.add("col-md-6");
+      cropCol.classList.add("col-sm-6");
+      cropCol.classList.add("col-md-3");
       cropCol.classList.add("my-3");
       let cropCard = document.createElement("div");
       cropCard.classList.add("card");
@@ -123,14 +136,14 @@ export default function loadPlayerInfo(data) {
       cropRow.appendChild(cropCol);
     });
   }
-  cropGCol.appendChild(cropRow);
-  workerCropRow.appendChild(cropGCol);
+  container.appendChild(cropRow);
+}
 
-  // Workers list
+async function listWokers() {
+  getContainer();
+  container.innerHTML = "";
 
-  let workerGCol = document.createElement("div");
-  workerGCol.classList.add("col-12");
-  workerGCol.classList.add("col-md-6");
+  let data = await REST.default.fetchPlayerData();
 
   let workerH2Row = document.createElement("div");
   workerH2Row.classList.add("row");
@@ -146,7 +159,7 @@ export default function loadPlayerInfo(data) {
   workerH2.innerText = "Workers";
   workerH2Col.appendChild(workerH2);
   workerH2Row.appendChild(workerH2Col);
-  workerGCol.append(workerH2Row);
+  container.append(workerH2Row);
 
   let workerRow = document.createElement("div");
   workerRow.classList.add("row");
@@ -155,7 +168,8 @@ export default function loadPlayerInfo(data) {
   if (data.workers.length === 0) {
     let workerEmptyCol = document.createElement("div");
     workerEmptyCol.classList.add("col-12");
-    workerEmptyCol.classList.add("col-md-6");
+    workerEmptyCol.classList.add("col-sm-6");
+    workerEmptyCol.classList.add("col-md-3");
     workerEmptyCol.classList.add("colsToTest");
     let workerEmptyH2 = document.createElement("h3");
     workerEmptyH2.classList.add("text-center");
@@ -166,7 +180,8 @@ export default function loadPlayerInfo(data) {
     data.workers.forEach((worker, index) => {
       let workerCol = document.createElement("div");
       workerCol.classList.add("col-12");
-      workerCol.classList.add("col-md-6");
+      workerCol.classList.add("col-sm-6");
+      workerCol.classList.add("col-md-3");
       workerCol.classList.add("my-3");
       workerCol.classList.add("colsToTest");
       let workerCard = document.createElement("div");
@@ -202,11 +217,14 @@ export default function loadPlayerInfo(data) {
       workerRow.appendChild(workerCol);
     });
   }
-  workerGCol.appendChild(workerRow);
-  workerCropRow.appendChild(workerGCol);
-  container.append(workerCropRow);
+  container.append(workerRow);
+}
 
-  // Item list
+async function listItems() {
+  getContainer();
+  container.innerHTML = "";
+
+  let data = await REST.default.fetchPlayerData();
 
   let itemH2Row = document.createElement("div");
   itemH2Row.classList.add("row");
@@ -271,8 +289,6 @@ export default function loadPlayerInfo(data) {
     });
   }
   container.append(itemRow);
-
-  console.log("arribat");
-  checkThatWokersAreDisplayed();
-  console.log("despues");
 }
+
+export default { leaderboard, listCrops, listWokers, listItems };
