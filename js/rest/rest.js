@@ -2,6 +2,7 @@ import loadPlayerInfo from "../ui/playerInfo.js";
 import hireWorker from "../ui/worker.js";
 import Player from "../models/player.js";
 import buyCrops from "../ui/crops.js";
+import * as USER from "../ui/user.js";
 import { Buffer } from "buffer";
 
 let url = "http://localhost:4040/";
@@ -46,20 +47,28 @@ async function loginPlayer(name, pass) {
   loadPlayerInfo(player);
 }
 
-async function createPlayer(name, pass) {
+async function createPlayer(name, pass, passR) {
   if (name !== "") {
     const response = await fetch(url + "api/v1/player/create", {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
-      body: JSON.stringify({ name: name, password: pass }),
+      body: JSON.stringify({
+        name: name,
+        password: pass,
+        passwordRepeat: passR,
+      }),
     });
-    const data = await response.json();
-    let player = Object.assign(new Player(), data);
-    let playerStr = Buffer.from(name + ":" + pass);
-    localStorage.setItem("player", playerStr.toString("base64"));
-    loadPlayerInfo(player);
+    if (!response.ok) {
+      USER.default.createUser(await response.text());
+    } else {
+      const data = await response.json();
+      let player = Object.assign(new Player(), data);
+      let playerStr = Buffer.from(name + ":" + pass);
+      localStorage.setItem("player", playerStr.toString("base64"));
+      loadPlayerInfo(player);
+    }
   }
 }
 

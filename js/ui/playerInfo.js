@@ -28,7 +28,7 @@ export default function loadPlayerInfo(data) {
 
   let row = document.createElement("div");
   row.classList.add("row");
-  row.classList.add("justify-content-around");
+  row.classList.add("justify-content-center");
   let col = document.createElement("div");
   col.classList.add("col-6");
   col.classList.add("col-md-3");
@@ -50,7 +50,7 @@ export default function loadPlayerInfo(data) {
 
   let cropH2Row = document.createElement("div");
   cropH2Row.classList.add("row");
-  cropH2Row.classList.add("justify-content-around");
+  cropH2Row.classList.add("justify-content-center");
 
   let cropH2Col = document.createElement("div");
   cropH2Col.classList.add("col-6");
@@ -66,7 +66,7 @@ export default function loadPlayerInfo(data) {
 
   let cropRow = document.createElement("div");
   cropRow.classList.add("row");
-  cropRow.classList.add("justify-content-around");
+  cropRow.classList.add("justify-content-center");
 
   if (data.crops.length === 0) {
     let cropsEmptyCol = document.createElement("div");
@@ -134,7 +134,7 @@ export default function loadPlayerInfo(data) {
 
   let workerH2Row = document.createElement("div");
   workerH2Row.classList.add("row");
-  workerH2Row.classList.add("justify-content-around");
+  workerH2Row.classList.add("justify-content-center");
 
   let workerH2Col = document.createElement("div");
   workerH2Col.classList.add("col-6");
@@ -150,7 +150,7 @@ export default function loadPlayerInfo(data) {
 
   let workerRow = document.createElement("div");
   workerRow.classList.add("row");
-  workerRow.classList.add("justify-content-around");
+  workerRow.classList.add("justify-content-center");
 
   if (data.workers.length === 0) {
     let workerEmptyCol = document.createElement("div");
@@ -210,7 +210,7 @@ export default function loadPlayerInfo(data) {
 
   let itemH2Row = document.createElement("div");
   itemH2Row.classList.add("row");
-  itemH2Row.classList.add("justify-content-around");
+  itemH2Row.classList.add("justify-content-center");
 
   let itemH2Col = document.createElement("div");
   itemH2Col.classList.add("col-6");
@@ -226,7 +226,7 @@ export default function loadPlayerInfo(data) {
 
   let itemRow = document.createElement("div");
   itemRow.classList.add("row");
-  itemRow.classList.add("justify-content-around");
+  itemRow.classList.add("justify-content-center");
 
   if (data.items.length === 0) {
     let itemEmptyCol = document.createElement("div");

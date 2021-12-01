@@ -1,4 +1,12 @@
 import * as REST from "../rest/rest.js";
+import {
+  fromEvent,
+  of,
+  map,
+  distinctUntilChanged,
+  debounceTime,
+  switchMap,
+} from "rxjs";
 
 let container = undefined;
 let url = "http://localhost:4040";
@@ -19,9 +27,55 @@ export default async function hireWorker(error) {
   container.innerHTML = "";
   let workers = await REST.default.getAllWorkers();
   let player = await REST.default.fetchPlayerData();
+
+  let searchRow = document.createElement("div");
+  searchRow.classList.add("row");
+  searchRow.classList.add("justify-content-around");
+  let searchCol = document.createElement("div");
+  searchCol.classList.add("col-12");
+  searchCol.classList.add("col-md-6");
+  let searchForm = document.createElement("form");
+  let searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.classList.add("form-control");
+  searchInput.classList.add("form-control-lg");
+  searchInput.placeholder = "Search for workers";
+  searchForm.appendChild(searchInput);
+  searchCol.appendChild(searchForm);
+  searchRow.appendChild(searchCol);
+  container.appendChild(searchRow);
+
+  drawWorkers(workers, player, error);
+
+  const fetchWorkers = (searchText) => {
+    const fetchedWorkers =
+      !searchText || searchText.length == 0
+        ? workers
+        : workers.filter((worker) =>
+            worker.name.toLowerCase().includes(searchText.toLowerCase())
+          );
+    return of(fetchedWorkers);
+  };
+
+  let search$ = fromEvent(searchInput, "keyup").pipe(
+    map((event) => event.target.value),
+    distinctUntilChanged(),
+    debounceTime(150),
+    switchMap((searchText) => fetchWorkers(searchText))
+  );
+
+  search$.subscribe((data) => {
+    container.removeChild(container.querySelector(".rowToRemove"));
+    container.removeChild(container.querySelector(".rowToRemove"));
+    drawWorkers(data, player);
+  });
+}
+
+function drawWorkers(workers, player, error) {
   let titleRow = document.createElement("div");
   titleRow.classList.add("row");
-  titleRow.classList.add("justify-content-around");
+  titleRow.classList.add("justify-content-center");
+  titleRow.classList.add("rowToRemove");
   let titleCol = document.createElement("div");
   titleCol.classList.add("col-8");
   titleCol.classList.add("col-md-6");
@@ -39,6 +93,7 @@ export default async function hireWorker(error) {
   container.append(titleRow);
   let workerRow = document.createElement("div");
   workerRow.classList.add("row");
+  workerRow.classList.add("rowToRemove");
   workers.forEach((worker) => {
     let workerCol = document.createElement("div");
     workerCol.classList.add("col-12");

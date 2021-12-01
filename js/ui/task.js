@@ -22,7 +22,7 @@ export default async function assignTask(index, error) {
 
   let titleRow = document.createElement("div");
   titleRow.classList.add("row");
-  titleRow.classList.add("justify-content-around");
+  titleRow.classList.add("justify-content-center");
   let titleCol = document.createElement("div");
   titleCol.classList.add("col-8");
   titleCol.classList.add("col-md-6");
@@ -41,7 +41,7 @@ export default async function assignTask(index, error) {
 
   let row = document.createElement("div");
   row.classList.add("row");
-  row.classList.add("justify-content-around");
+  row.classList.add("justify-content-center");
 
   data.forEach((task) => {
     let col = document.createElement("div");

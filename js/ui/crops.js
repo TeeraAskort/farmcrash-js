@@ -1,5 +1,13 @@
 import * as REST from "../rest/rest.js";
 import checkThatCropsAreDisplayedInBuyPage from "../tests/checkThatCropsAreDisplayedInBuyPage.spec.js";
+import {
+  fromEvent,
+  of,
+  map,
+  distinctUntilChanged,
+  debounceTime,
+  switchMap,
+} from "rxjs";
 
 let container = undefined;
 let url = "http://localhost:4040";
@@ -29,33 +37,57 @@ export default async function buyCrops(error) {
   let searchForm = document.createElement("form");
   let searchInput = document.createElement("input");
   searchInput.type = "text";
+  searchInput.classList.add("form-control");
+  searchInput.classList.add("form-control-lg");
+  searchInput.placeholder = "Search for crops";
   searchForm.appendChild(searchInput);
   searchCol.appendChild(searchForm);
   searchRow.appendChild(searchCol);
   container.appendChild(searchRow);
 
-  let { titleRow, cropsRow } = drawCrops(data, error);
-  console.log(titleRow);
-  console.log(cropsRow);
+  drawCrops(data, error);
 
-  searchInput.addEventListener("focusin", () => {
-    document.addEventListener("keydown", () => {
-      let searchText = searchInput.value.trim();
-      let resultData = search(searchText, data);
-      container.removeChild(container.querySelector(".rowToRemove"));
-      container.removeChild(container.querySelector(".rowToRemove"));
-      drawCrops(resultData);
-    });
+  // searchInput.addEventListener("focusin", () => {
+  //   document.addEventListener("keydown", () => {
+  //     let searchText = searchInput.value.trim();
+  //     let resultData = search(searchText, data);
+  //     container.removeChild(container.querySelector(".rowToRemove"));
+  //     container.removeChild(container.querySelector(".rowToRemove"));
+  //     drawCrops(resultData);
+  //   });
+  // });
+
+  const fetchCrops = (searchText) => {
+    const fetchedCrops =
+      !searchText || searchText.length == 0
+        ? data
+        : data.filter((crop) =>
+            crop.name.toLowerCase().includes(searchText.toLowerCase())
+          );
+    return of(fetchedCrops);
+  };
+
+  let search$ = fromEvent(searchInput, "keyup").pipe(
+    map((event) => event.target.value),
+    distinctUntilChanged(),
+    debounceTime(150),
+    switchMap((searchText) => fetchCrops(searchText))
+  );
+
+  search$.subscribe((crops) => {
+    container.removeChild(container.querySelector(".rowToRemove"));
+    container.removeChild(container.querySelector(".rowToRemove"));
+    drawCrops(crops);
   });
 
   checkThatCropsAreDisplayedInBuyPage();
 }
 
-function search(searchText, crops) {
-  return crops.filter((crop) =>
-    crop.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-}
+// function search(searchText, crops) {
+//   return crops.filter((crop) =>
+//     crop.name.toLowerCase().includes(searchText.toLowerCase())
+//   );
+// }
 
 function drawCrops(crops, error) {
   let titleRow = document.createElement("div");
@@ -79,6 +111,7 @@ function drawCrops(crops, error) {
   container.append(titleRow);
   let cropsRow = document.createElement("div");
   cropsRow.classList.add("row");
+  cropsRow.classList.add("justify-content-center");
   cropsRow.classList.add("rowToRemove");
   crops.forEach((crop) => {
     let cropCol = document.createElement("div");
@@ -130,6 +163,4 @@ function drawCrops(crops, error) {
     cropsRow.appendChild(cropCol);
   });
   container.append(cropsRow);
-
-  return { titleRow, cropsRow };
 }

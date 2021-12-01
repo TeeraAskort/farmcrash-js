@@ -14,22 +14,27 @@ function getContainer() {
   container = document.querySelector("#container");
 }
 
-function createUser() {
+function createUser(error) {
   getContainer();
   container.innerHTML = "";
   let row = document.createElement("div");
   row.classList.add("row");
-  row.classList.add("justify-content-around");
+  row.classList.add("justify-content-center");
   let col = document.createElement("div");
-  col.classList.add("col-md-3");
-  col.classList.add("col-6");
+  col.classList.add("col-md-6");
+  col.classList.add("col-sm-8");
+  col.classList.add("col-12");
   let card = document.createElement("div");
   card.classList.add("card");
   let cardBody = document.createElement("div");
   cardBody.classList.add("card-body");
   let h5 = document.createElement("h5");
   h5.classList.add("card-title");
-  h5.innerText = "Create user";
+  if (error) {
+    h5.innerHTML = '<font color="red">' + error + "</font><br>Create user";
+  } else {
+    h5.innerText = "Create user";
+  }
   cardBody.appendChild(h5);
   let username = document.createElement("input");
   username.type = "text";
@@ -43,10 +48,18 @@ function createUser() {
   password.type = "password";
   password.name = "password";
   password.id = "password";
-  password.placeholder = "Placeholder";
+  password.placeholder = "Password";
   password.classList.add("form-control");
   password.classList.add("mb-3");
   cardBody.appendChild(password);
+  let passwordRepeat = document.createElement("input");
+  passwordRepeat.type = "password";
+  passwordRepeat.name = "password";
+  passwordRepeat.id = "password";
+  passwordRepeat.placeholder = "Repeat password";
+  passwordRepeat.classList.add("form-control");
+  passwordRepeat.classList.add("mb-3");
+  cardBody.appendChild(passwordRepeat);
   let btn = document.createElement("a");
   btn.classList.add("btn");
   btn.classList.add("btn-primary");
@@ -54,7 +67,12 @@ function createUser() {
   btn.addEventListener("click", () => {
     let user = username.value;
     let pass = password.value;
-    REST.default.createPlayer(user, pass);
+    let passR = passwordRepeat.value;
+    if (pass === passR) {
+      REST.default.createPlayer(user, pass, passR);
+    } else {
+      createUser("Passwords do not match");
+    }
   });
   let btnLogin = document.createElement("a");
   btnLogin.classList.add("btn");
@@ -77,7 +95,7 @@ function login() {
   container.innerHTML = "";
   let row = document.createElement("div");
   row.classList.add("row");
-  row.classList.add("justify-content-around");
+  row.classList.add("justify-content-center");
   let col = document.createElement("div");
   col.classList.add("col-md-3");
   col.classList.add("col-6");

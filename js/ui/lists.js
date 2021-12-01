@@ -20,12 +20,12 @@ async function leaderboard() {
 
   let players = await REST.default.getLeaderboard();
 
-  let cadena = `<div class="row justify-content-around">
+  let cadena = `<div class="row justify-content-center">
                     <div class="col-12 col-md-6 col-sm-8">
                         <h2>Leaderboard</h2>
                     </div>
                 </div>
-                <div class="row justify-content-around">
+                <div class="row justify-content-center">
                     <div class="col-12 col-md-6 col-sm-8">
                         <table class="table">
                             <thead>
@@ -163,7 +163,7 @@ async function listWokers() {
 
   let workerRow = document.createElement("div");
   workerRow.classList.add("row");
-  workerRow.classList.add("justify-content-around");
+  workerRow.classList.add("justify-content-center");
 
   if (data.workers.length === 0) {
     let workerEmptyCol = document.createElement("div");
@@ -228,7 +228,7 @@ async function listItems() {
 
   let itemH2Row = document.createElement("div");
   itemH2Row.classList.add("row");
-  itemH2Row.classList.add("justify-content-around");
+  itemH2Row.classList.add("justify-content-center");
 
   let itemH2Col = document.createElement("div");
   itemH2Col.classList.add("col-6");
@@ -244,7 +244,7 @@ async function listItems() {
 
   let itemRow = document.createElement("div");
   itemRow.classList.add("row");
-  itemRow.classList.add("justify-content-around");
+  itemRow.classList.add("justify-content-center");
 
   if (data.items.length === 0) {
     let itemEmptyCol = document.createElement("div");
