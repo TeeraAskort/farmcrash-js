@@ -217,6 +217,18 @@ async function sellItem(index) {
   loadPlayerInfo(player);
 }
 
+async function fetchStats() {
+  let response = await fetch(url + "api/v1/player/stats", {
+    method: "GET",
+    headers: {
+      Authorization: "Basic " + localStorage.getItem("player"),
+    },
+    credentials: "include",
+  });
+
+  return response.json();
+}
+
 export default {
   fetchPlayer,
   createPlayer,
@@ -232,4 +244,5 @@ export default {
   hireWorkerRest,
   getLeaderboard,
   sellItem,
+  fetchStats,
 };

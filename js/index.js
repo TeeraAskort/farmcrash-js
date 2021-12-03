@@ -5,6 +5,35 @@ import * as LISTS from "./ui/lists.js";
 import hireWorker from "./ui/worker.js";
 import assignTask from "./ui/task.js";
 import loadPlayerInfo from "./ui/playerInfo.js";
+import showChart from "./ui/charts.js";
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle,
+} from "chart.js";
+
 import * as USER from "./ui/user.js";
 
 import checkThatWokersAreDisplayed from "./tests/checkThatWokersAreDisplayed.spec.js";
@@ -94,6 +123,16 @@ import checkThatCropsAreDisplayedInBuyPage from "./tests/checkThatCropsAreDispla
         let option = document.querySelector("#listItems");
         option.classList.add("active");
         localStorage.setItem("active", "#listItems");
+      }
+    });
+
+    document.querySelector("#statistics").addEventListener("click", () => {
+      if (localStorage.getItem("player")) {
+        showChart();
+        cleanActive();
+        let option = document.querySelector("#statistics");
+        option.classList.add("active");
+        localStorage.setItem("active", "#statistics");
       }
     });
   }
