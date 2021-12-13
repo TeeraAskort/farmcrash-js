@@ -39,3 +39,22 @@ La página principal contiene todas las listas de objetos, verduras y trabajador
 ## Página de estadisticas
 
 Ésta página contiene un gráfico de la cantidad de dinero que ha ido teniendo el usuario durante los últimos siete dias.
+
+## Paquetes NPM
+
+### Paquetes utilizados para el desarrollo:
+
+- chai
+- mocha
+- webpack
+- webpack-cli
+- webpack-dev-server
+- clean-webpack-plugin
+- html-webpack-plugin
+- style-loader
+
+### Paquetes utilizados en producción:
+
+- buffer -> Para convertir a base64 los datos del usuario
+- chart.js -> Para mostrar el gráfico en la página de estadisticas
+- rxjs -> Para la busqueda reactiva en las páginas de compra de verduras y contratación de trabajadores
