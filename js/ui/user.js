@@ -97,8 +97,8 @@ function login() {
   row.classList.add("row");
   row.classList.add("justify-content-center");
   let col = document.createElement("div");
-  col.classList.add("col-md-3");
-  col.classList.add("col-6");
+  col.classList.add("col-md-6");
+  col.classList.add("col-12");
   let card = document.createElement("div");
   card.classList.add("card");
   let cardBody = document.createElement("div");
