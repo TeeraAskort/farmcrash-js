@@ -135,6 +135,13 @@ import checkThatCropsAreDisplayedInBuyPage from "./tests/checkThatCropsAreDispla
         localStorage.setItem("active", "#statistics");
       }
     });
+
+    document.querySelector("#logout").addEventListener("click", () => {
+      if (localStorage.getItem("player")) {
+        localStorage.removeItem("player");
+        loadUser();
+      }
+    });
   }
 
   document.addEventListener("DOMContentLoaded", inicializar);
