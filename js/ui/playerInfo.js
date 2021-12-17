@@ -16,6 +16,11 @@ function getContainer() {
   container = document.querySelector("#container");
 }
 
+/**
+ * Función que renderiza la información del jugador.
+ * @param {Player} data información del jugador a mostrar
+ */
+
 export default function loadPlayerInfo(data) {
   cleanActive();
   let home = document.querySelector("#home");
@@ -100,6 +105,7 @@ export default function loadPlayerInfo(data) {
       cropAmount.innerText = "Amount: " + crop.amount;
       cropCardBody.append(cropAmount);
       if (crop.stage === "READYTOFARM") {
+        // Si se encuentra en el "STAGE" "READYTOFARM" muestra un botón para llamar a la api y recogerla
         let farmCrop = document.createElement("a");
         farmCrop.classList.add("btn");
         farmCrop.classList.add("btn-success");
@@ -109,6 +115,7 @@ export default function loadPlayerInfo(data) {
         });
         cropCardBody.appendChild(farmCrop);
       } else if (crop.stage === "SELL") {
+        // Si se encuentra en el "STAGE" "SELL" muestra un botón para llamar a la api y vender la verdura
         let sellCrop = document.createElement("a");
         sellCrop.classList.add("btn");
         sellCrop.classList.add("btn-success");
@@ -183,6 +190,7 @@ export default function loadPlayerInfo(data) {
       workerCardBody.appendChild(workerName);
 
       if (!worker.taskAssignedTo) {
+        // Si el trabajador no tiene una tarea asignada, mostrar un botón para ir a la página de asignar tarea.
         let assignTaskBtn = document.createElement("a");
         assignTaskBtn.classList.add("btn");
         assignTaskBtn.classList.add("btn-success");
@@ -192,6 +200,7 @@ export default function loadPlayerInfo(data) {
         });
         workerCardBody.appendChild(assignTaskBtn);
       } else {
+        // Si tiene una tarea asignada mostrar el nombre
         let workerTask = document.createElement("p");
         workerTask.classList.add("card-text");
         workerTask.innerText = "Task: " + worker.taskAssignedTo.type;
@@ -257,7 +266,7 @@ export default function loadPlayerInfo(data) {
       itemName.classList.add("card-title");
       itemName.innerText = item.name;
       itemCardBody.appendChild(itemName);
-      let itemSellBtn = document.createElement("a");
+      let itemSellBtn = document.createElement("a"); // Mostrar un botón para vender el objeto
       itemSellBtn.classList.add("btn");
       itemSellBtn.classList.add("btn-success");
       itemSellBtn.textContent = "Sell";
@@ -272,5 +281,6 @@ export default function loadPlayerInfo(data) {
   }
   container.append(itemRow);
 
+  // Llamar a test E2E de esta página
   checkThatWokersAreDisplayed();
 }

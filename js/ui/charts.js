@@ -57,6 +57,7 @@ export default async function showChart() {
   chartRow.appendChild(chartCol);
   container.appendChild(chartRow);
 
+  // Registrar los componentes en Chart.js para que pueda mostrar el gráfico
   Chart.register(
     ArcElement,
     LineElement,
@@ -84,6 +85,7 @@ export default async function showChart() {
     SubTitle
   );
 
+  // Configurar los datos para que muestre un gráfico de lineas
   const config = {
     type: "line",
     data: data,
@@ -96,5 +98,6 @@ export default async function showChart() {
     },
   };
 
+  // Mostrar las estadisticas
   new Chart(chart, config);
 }

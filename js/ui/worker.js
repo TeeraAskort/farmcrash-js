@@ -47,6 +47,11 @@ export default async function hireWorker(error) {
 
   drawWorkers(workers, player, error);
 
+  /**
+   * Función reactiva para filtrar los trabajadores por nombre
+   * @param {string} searchText texto a buscar
+   * @returns lista de trabajadores filtrados
+   */
   const fetchWorkers = (searchText) => {
     const fetchedWorkers =
       !searchText || searchText.length == 0
@@ -57,6 +62,10 @@ export default async function hireWorker(error) {
     return of(fetchedWorkers);
   };
 
+  /**
+   * Función que escucha el evento keyup del campo de búsqueda
+   * recoge el valor y realiza la busqueda.
+   */
   let search$ = fromEvent(searchInput, "keyup").pipe(
     map((event) => event.target.value),
     distinctUntilChanged(),
@@ -64,6 +73,10 @@ export default async function hireWorker(error) {
     switchMap((searchText) => fetchWorkers(searchText))
   );
 
+  /**
+   * Nos suscribimos a los datos que devuelve la función "search$" y
+   * redibujamos los trabajadores.
+   */
   search$.subscribe((data) => {
     container.removeChild(container.querySelector(".rowToRemove"));
     container.removeChild(container.querySelector(".rowToRemove"));
