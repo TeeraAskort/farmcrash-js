@@ -1,3 +1,6 @@
+/**
+ * Sin usar
+ */
 export default class Crop {
   constructor(
     id,
