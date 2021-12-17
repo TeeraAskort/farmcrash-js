@@ -15,7 +15,6 @@ export default function checkThatWokersAreDisplayed() {
 
   var playerData = undefined;
   var cols = undefined;
-  console.log("cridada");
 
   describe(`Test that workers are displayed on user info page`, () => {
     describe(`Get player data and test that it has content`, () => {
@@ -39,7 +38,6 @@ export default function checkThatWokersAreDisplayed() {
         } else {
           cols.forEach((col, index) => {
             let name = col.querySelector(".card-title").innerText;
-            console.log(name);
             expect(name).to.contain(playerData.workers[index].name);
           });
         }

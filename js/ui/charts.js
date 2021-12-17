@@ -84,8 +84,6 @@ export default async function showChart() {
     SubTitle
   );
 
-  console.log(data);
-
   const config = {
     type: "line",
     data: data,

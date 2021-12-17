@@ -272,7 +272,5 @@ export default function loadPlayerInfo(data) {
   }
   container.append(itemRow);
 
-  console.log("arribat");
   checkThatWokersAreDisplayed();
-  console.log("despues");
 }

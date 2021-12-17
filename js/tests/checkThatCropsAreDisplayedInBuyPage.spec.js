@@ -34,7 +34,6 @@ export default function checkThatCropsAreDisplayedInBuyPage() {
       it(`Check that there are crops displayed`, () => {
         cols.forEach((col, index) => {
           let name = col.querySelector(".card-title").innerText;
-          console.log(name);
 
           expect(name).to.contain(crops[index].name);
         });
