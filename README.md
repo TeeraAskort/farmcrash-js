@@ -1,5 +1,11 @@
 # farmcrash-js
 
+## Objetivo de la aplicación
+
+El objetivo de la aplicación es realizar un juego multijugador online de granja dónde los jugadores compitan por ver quien es el que más dinero puede conseguir.
+
+La aplicación está dividida en un backend realizado en "Java" con el framework "Spring Boot" ([repositorio](https://github.com/TeeraAskort/farmcrash-backend)) y el frontend realizado en "Javascript" puro.
+
 ## Distribución de archivos
 
 - html -> dónde reside el index.html
